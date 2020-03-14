@@ -1,9 +1,9 @@
 import 'react-native-gesture-handler';
 import React, {Component} from 'react';
-import {View, Text} from 'react-native';
-import {Card} from 'react-native-elements';
+import {ScrollView, View, Text, FlatList} from 'react-native';
+import {Card, ListItem, Icon } from 'react-native-elements';
 import { DISHES } from '../shared/dishes';
-import { StackRouter } from '@react-navigation/native';
+import {COMMENTS} from '../shared/comments';
 
 function RenderDish(props){
     const dish = props.selectedDish[0];
@@ -15,8 +15,15 @@ function RenderDish(props){
             >
             <Text>
                 {dish.description}
-                
             </Text>
+            <Icon 
+                raised
+                reverse
+                name={ props.favorite ? 'heart' : 'heart-o'}
+                type="font-awesome"
+                color='#f50'
+                onPress = {() => props.favorite ? console.log('Already favorited') : props.onPress()}
+            />
             </Card>
 
         );
@@ -28,6 +35,30 @@ function RenderDish(props){
     }
 }
 
+function RenderComments(props){
+    const comments = props.comments;
+
+    const renderCommentItem = ({item,index}) =>{
+        return(
+            <View key={index} style={{margin:10}}>
+                <Text style={{fontSize: 14}}>{item.comment}</Text>
+                <Text style={{fontSize: 12}}>{item.rating}</Text>
+                <Text style={{fontSize: 12}}>{'-- ' + item.author + ', ' + item.date}</Text>
+            </View>
+        )
+    }
+
+    return(
+        <Card title='Comments'>
+            <FlatList 
+                data={comments}
+                renderItem={renderCommentItem}
+                keyExtractor={item => item.id.toString()}
+            />
+        </Card>
+    );
+}
+
 class DishDetail extends Component {
     
     constructor(props){
@@ -35,9 +66,16 @@ class DishDetail extends Component {
         this.state = {
             dishes: DISHES,
             selectedDish: null,
+            comments: COMMENTS,
+            favorites: []
         };
     }
     
+    markFavorite(dishId) {
+        this.setState({
+            favorites: this.state.favorites.concat(dishId)
+        });
+    }
    
     render(){
         //const dish = this.state.dishes.filter((dish) => dish.id === this.state.selectedDish)[0];
@@ -45,9 +83,14 @@ class DishDetail extends Component {
         const dishId = this.props.route.params?.dishId ?? null;
         //const dishId = this.props.navigation.dangerouslyGetParent().getParam('dishId');
         return(
-            <View>
-                <RenderDish selectedDish={this.state.dishes.filter((dish) => dish.id === dishId)} />
-            </View>
+            <ScrollView>
+                <RenderDish 
+                    selectedDish={this.state.dishes.filter((dish) => dish.id === dishId)} 
+                    favorite={this.state.favorites.some(el => el === dishId)}
+                    onPress={() => this.markFavorite(dishId)}
+                />
+                <RenderComments comments={this.state.comments.filter((comment) => comment.dishId === dishId)} />
+            </ScrollView>
         );
     }
 }
