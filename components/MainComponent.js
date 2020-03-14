@@ -150,7 +150,8 @@ const styles = StyleSheet.create({
     alignSelf:'flex-end',
     color: 'white',
     fontSize: 14,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
+    enable
   },
   drawerImage: {
     margin: 10,
