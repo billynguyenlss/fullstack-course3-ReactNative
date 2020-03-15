@@ -5,13 +5,25 @@ import {Card, ListItem, Icon } from 'react-native-elements';
 import { DISHES } from '../shared/dishes';
 import {COMMENTS} from '../shared/comments';
 
-function RenderDish(props){
-    const dish = props.selectedDish[0];
+import {connect} from 'react-redux';
+import {baseUrl} from '../shared/baseUrl';
+
+const mapStateToProps = state => {
+    return {
+        dishes: state.dishes,
+        comments: state.comments,
+    }
+}
+
+function RenderDish(props){ //props
+    console.log(props);
+    //const dish = selectedDish; 
+    const dish = props.selectedDish; //[0]
     if (dish != null){
         return(
             <Card
                 featuredTitle={dish.name}
-                image={require('./images/uthappizza.png')}
+                image={{uri: baseUrl + dish.image}}
             >
             <Text>
                 {dish.description}
@@ -65,8 +77,8 @@ class DishDetail extends Component {
         super(props);
         this.state = {
             dishes: DISHES,
-            selectedDish: null,
             comments: COMMENTS,
+            selectedDish: null,
             favorites: []
         };
     }
@@ -85,7 +97,8 @@ class DishDetail extends Component {
         return(
             <ScrollView>
                 <RenderDish 
-                    selectedDish={this.state.dishes.filter((dish) => dish.id === dishId)} 
+                    selectedDish={this.state.dishes.filter((dish) => dish.id === dishId)[0]} 
+                    //selectedDish={this.props.dishes.dishes[+dishId]}
                     favorite={this.state.favorites.some(el => el === dishId)}
                     onPress={() => this.markFavorite(dishId)}
                 />
@@ -95,4 +108,4 @@ class DishDetail extends Component {
     }
 }
 
-export default DishDetail;
+export default connect(mapStateToProps)(DishDetail);

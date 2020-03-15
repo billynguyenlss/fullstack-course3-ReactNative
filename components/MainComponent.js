@@ -16,6 +16,28 @@ import Home from './HomeComponent';
 import Contact from './ContactComponent';
 import About from './AboutComponent';
 
+import { connect } from 'react-redux';
+import { fetchDishes, 
+      fetchComments, 
+      fetchPromos, 
+      fetchLeaders } from '../redux/ActionCreators';
+
+const mapStateToProps = state => {
+  return {
+    dishes: state.dishes,
+    comments: state.comments,
+    promotions: state.promotions,
+    leaders: state.leaders
+  }
+}
+
+const mapDispatchToProps = dispatch => ({
+  fetchDishes: () => dispatch(fetchDishes()),
+  fetchComments: () => dispatch(fetchComments()),
+  fetchPromos: () => dispatch(fetchPromos()),
+  fetchLeaders: () => dispatch(fetchLeaders()),
+})
+
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
@@ -31,6 +53,8 @@ function renderHome({props, navigation}){
       <Stack.Screen 
         name="Home" 
         component={Home}
+        options={{
+          title: 'Home'}}
       />
     </Stack.Navigator>
     
@@ -55,6 +79,23 @@ function renderMenu({navigation}){
   )
 }
 
+function renderAbout({navigation}){
+  return(
+    <Stack.Navigator
+      screenOptions={{flex:1, 
+      headerStyle:{backgroundColor: '#512DA8'}, 
+      headerTintColor: '#fff',
+      headerTitleStyle: {color: '#fff'}}}
+    >
+      <Stack.Screen 
+        name="About" 
+        component={About} 
+        options={{title:'About'}}
+      />
+    </Stack.Navigator> 
+  )
+}
+
 function CustomDrawerContent(props) {
   return (
     <DrawerContentScrollView {...props}>
@@ -73,18 +114,16 @@ function CustomDrawerContent(props) {
 
 class Main extends Component {
 
-  
+  componentDidMount() {
+    this.props.fetchDishes();
+    this.props.fetchComments();
+    this.props.fetchPromos();
+    this.props.fetchLeaders();
+  }
 
   render() {
 
     return (
-        // <View style={{flex:1, 
-        //  paddingTop: Platform.OS === 'ios' ? 0 : expo.Constants.statusBarHeight}}>
-        //   <MenuNavigator />
-        // </View>
-
-
-
         <NavigationContainer>
           <Drawer.Navigator 
             initialRouteName="Home" 
@@ -96,14 +135,13 @@ class Main extends Component {
           >
             <Drawer.Screen 
               name="Home" 
-              component={Home}
+              component={renderHome}
               options={{
-                title: 'Home',
                 drawerLabel: 'Home',
                 drawerIcon: ({tintColor, focused}) => <Icon size={24} name='home' type='font-awesome' color={tintColor} />
               }}
             />
-            <Drawer.Screen name="About Us" component={About} 
+            <Drawer.Screen name="About Us" component={renderAbout} 
               options={{
                 title: 'About Us',
                 drawerLabel: 'About us',
@@ -130,7 +168,7 @@ class Main extends Component {
       }
 }
   
-export default Main;
+export default connect(mapStateToProps, mapDispatchToProps)(Main);
 
 const styles = StyleSheet.create({
   container: {
