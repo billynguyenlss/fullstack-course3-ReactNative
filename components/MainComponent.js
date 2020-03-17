@@ -12,6 +12,7 @@ import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList, DrawerI
 import { StackNavigator, SwitchNavigator, SafeAreaView } from 'react-navigation';
 import Menu from './MenuComponent';
 import DishDetail from './DishDetail';
+import Reservation from './ReservationComponent';
 import Home from './HomeComponent';
 import Contact from './ContactComponent';
 import About from './AboutComponent';
@@ -96,6 +97,23 @@ function renderAbout({navigation}){
   )
 }
 
+function renderReservation({navigation}){
+  return(
+    <Stack.Navigator
+      screenOptions={{flex:1, 
+      headerStyle:{backgroundColor: '#512DA8'}, 
+      headerTintColor: '#fff',
+      headerTitleStyle: {color: '#fff'}}}
+    >
+      <Stack.Screen 
+        name="Reservation" 
+        component={Reservation} 
+        options={{title:'Reservation'}}
+      />
+    </Stack.Navigator> 
+  )
+}
+
 function CustomDrawerContent(props) {
   return (
     <DrawerContentScrollView {...props}>
@@ -130,7 +148,8 @@ class Main extends Component {
             screenOptions={{flex:1, 
               headerStyle:{backgroundColor: '#512DA8'}, 
               headerTintColor: '#fff',
-              headerTitleStyle: {color: '#fff'}}}
+              headerTitleStyle: {color: '#fff'},
+              backgroundColor: ''}}
             drawerContent={props => <CustomDrawerContent {...props} />}
           >
             <Drawer.Screen 
@@ -159,6 +178,12 @@ class Main extends Component {
                 title: 'Contact',
                 drawerLabel: 'Contact',
                 drawerIcon: ({tintColor, focused}) => <Icon size={24} name='address-card' type='font-awesome' color={tintColor} />
+              }}
+            />
+            <Drawer.Screen name="Reservation" component={renderReservation} 
+              options={{
+                drawerLabel: 'Reservation',
+                drawerIcon: ({tintColor, focused}) => <Icon size={24} name='cutlery' type='font-awesome' color={tintColor} />
               }}
             />
           </Drawer.Navigator>
