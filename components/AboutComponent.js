@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {ScrollView, Text, FlatList} from 'react-native';
+import {ScrollView, Text, FlatList, SafeAreaView} from 'react-native';
 import {Card, ListItem} from 'react-native-elements';
 import {LEADERS} from '../shared/leaders';
 import {connect} from 'react-redux';
@@ -46,14 +46,14 @@ class About extends Component {
 
         if (this.props.leaders.isLoading) {
             return(
-                <ScrollView>
+                <SafeAreaView style={{flex: 1}}>
                     <History />
                     <Card
                         title='Corporate Leadership'>
                             <Loading />
                     </Card>
 
-                </ScrollView>
+                </SafeAreaView>
             )
         }
         else if (this.props.leaders.errMess) {
