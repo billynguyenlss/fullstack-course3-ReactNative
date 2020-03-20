@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, ScrollView, StyleSheet, Picker, Switch, Button } from 'react-native';
+import { Text, View, ScrollView, StyleSheet, Picker, Switch, Button, Modal } from 'react-native';
 import { Card } from 'react-native-elements';
 import DatePicker from 'react-native-datepicker';
 
@@ -10,7 +10,8 @@ class Reservation extends Component {
         this.state = {
             guests: 1,
             smoking: false,
-            date: ''
+            date: '',
+            showModal: false
         }
     }
 
@@ -18,13 +19,21 @@ class Reservation extends Component {
         title: 'Reservation Table'
     }
 
+    toggleModal(){
+        this.setState({ showModal: !this.state.showModal})
+    }
+
     handleResevation() {
         console.log(JSON.stringify(this.state));
+        this.toggleModal();
+    }
+
+    resetForm() {
         this.setState({
             guests: 1,
             smoking: false,
             date: ''
-        });
+        })
     }
 
     render(){
@@ -37,7 +46,7 @@ class Reservation extends Component {
                     <Picker 
                         style={styles.formItem}
                         selectedValue={this.state.guest}
-                        onValueChange={(itemValue, itemIndex) => this.setState({ guest: itemValue })}
+                        onValueChange={(itemValue, itemIndex) => this.setState({ guests: itemValue })}
                     >
                         <Picker.Item label='1' value='1'/>
                         <Picker.Item label='2' value='2'/>
@@ -54,7 +63,7 @@ class Reservation extends Component {
                     <Switch
                         style={styles.formItem}
                         value={this.state.smoking}
-                        onTintColor='#512DA8'
+                        trackColor='#512DA8'
                         onValueChange={(value) => this.setState({ smoking: value })}
                     >
                     </Switch>
@@ -92,6 +101,26 @@ class Reservation extends Component {
                         accessibilityLabel='Learn more about this purple button'
                     />
                 </View>
+
+                <Modal 
+                    animationType={'slide'}
+                    transparent={false}
+                    visible={this.state.showModal}
+                    onDismiss={() => {this.toggleModal(); this.resetForm()}}
+                    onRequestClose={() => {this.toggleModal(); this.resetForm()}}
+                >
+                    <View style={styles.modal}>
+                        <Text style={styles.modalTitle}>Your reservation</Text>
+                        <Text style={styles.modalText}>Number of Guest: {this.state.guests}</Text>
+                        <Text style={styles.modalText}>Smoking? : {this.state.smoking ? 'Yes' : 'No'}</Text>
+                        <Text style={styles.modalText}>Date and Time: {this.state.date}</Text>
+                        <Button
+                            onPress={() => {this.toggleModal(); this.resetForm()}}
+                            color='#512DA8'
+                            title='Close'
+                        />
+                    </View>
+                </Modal>
             </ScrollView>
         );
     }
@@ -112,6 +141,22 @@ const styles = StyleSheet.create({
     },
     formItem: {
         flex: 1
+    },
+    modal: {
+        justifyContent: 'center',
+        margin: 20
+    },
+    modalTitle: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        backgroundColor: '#522DA8',
+        textAlign: 'center',
+        color: 'white',
+        marginBottom: 20
+    },
+    modalText: {
+        fontSize: 18,
+        margin: 10
     }
 })
 

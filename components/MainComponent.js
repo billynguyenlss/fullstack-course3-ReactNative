@@ -16,6 +16,7 @@ import Reservation from './ReservationComponent';
 import Home from './HomeComponent';
 import Contact from './ContactComponent';
 import About from './AboutComponent';
+import Favorites from './FavoriteComponent';
 
 import { connect } from 'react-redux';
 import { fetchDishes, 
@@ -55,7 +56,11 @@ function renderHome({props, navigation}){
         name="Home" 
         component={Home}
         options={{
-          title: 'Home'}}
+          title: 'Home',
+          headerLeft: () => (
+              <Icon size={30} name='home' type='font-awesome' color='white'/>
+          )
+        }}
       />
     </Stack.Navigator>
     
@@ -73,7 +78,12 @@ function renderMenu({navigation}){
       <Stack.Screen 
         name="Menu" 
         component={Menu} 
-        options={{title:'Menu'}}
+        options={{
+          title:'Menu',
+          headerLeft: () => (
+            <Icon size={30} name='list' type='font-awesome' color='white'/>
+        ) 
+        }}
       />
       <Stack.Screen name="DishDetail" component={DishDetail} options={{title:'Dish detail'}}/>
     </Stack.Navigator> 
@@ -91,7 +101,34 @@ function renderAbout({navigation}){
       <Stack.Screen 
         name="About" 
         component={About} 
-        options={{title:'About'}}
+        options={{
+          title:'About',
+          headerLeft: () => (
+            <Icon size={30} name='info-circle' type='font-awesome' color='white'/>
+        ) 
+        }}
+      />
+    </Stack.Navigator> 
+  )
+}
+
+function renderContact({navigation}){
+  return(
+    <Stack.Navigator
+      screenOptions={{flex:1, 
+      headerStyle:{backgroundColor: '#512DA8'}, 
+      headerTintColor: '#fff',
+      headerTitleStyle: {color: '#fff'}}}
+    >
+      <Stack.Screen 
+        name="Contact" 
+        component={Contact} 
+        options={{
+          title:'Contact',
+          headerLeft: () => (
+            <Icon size={30} name='address-card' type='font-awesome' color='white'/>
+        ) 
+        }}
       />
     </Stack.Navigator> 
   )
@@ -109,6 +146,28 @@ function renderReservation({navigation}){
         name="Reservation" 
         component={Reservation} 
         options={{title:'Reservation'}}
+      />
+    </Stack.Navigator> 
+  )
+}
+
+function renderFavoritesMenu({navigation}){
+  return(
+    <Stack.Navigator
+      screenOptions={{flex:1, 
+      headerStyle:{backgroundColor: '#512DA8'}, 
+      headerTintColor: '#fff',
+      headerTitleStyle: {color: '#fff'}}}
+    >
+      <Stack.Screen 
+        name="My Favorites" 
+        component={Favorites} 
+        options={{
+          title:'Favorites Menu',
+          headerLeft: () => (
+            <Icon size={30} name='heart' type='font-awesome' color='white'/>
+        ) 
+        }}
       />
     </Stack.Navigator> 
   )
@@ -173,7 +232,7 @@ class Main extends Component {
                 drawerIcon: ({tintColor, focused}) => <Icon size={24} name='list' type='font-awesome' color={tintColor} />
               }}
             />   
-            <Drawer.Screen name="Contact" component={Contact} 
+            <Drawer.Screen name="Contact" component={renderContact} 
               options={{
                 title: 'Contact',
                 drawerLabel: 'Contact',
@@ -184,6 +243,12 @@ class Main extends Component {
               options={{
                 drawerLabel: 'Reservation',
                 drawerIcon: ({tintColor, focused}) => <Icon size={24} name='cutlery' type='font-awesome' color={tintColor} />
+              }}
+            />
+            <Drawer.Screen name="My Favorites" component={renderFavoritesMenu} 
+              options={{
+                drawerLabel: 'My Favorites',
+                drawerIcon: ({tintColor, focused}) => <Icon size={24} name='heart' type='font-awesome' color={tintColor} />
               }}
             />
           </Drawer.Navigator>
