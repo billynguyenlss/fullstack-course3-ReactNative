@@ -6,6 +6,7 @@ import { DISHES } from '../shared/dishes';
 
 import { connect } from 'react-redux';
 import { baseUrl } from '../shared/baseUrl';
+import * as Animatable from 'react-native-animatable';
 
 const mapStateToProps = state => {
     return {
@@ -32,6 +33,7 @@ class Menu extends React.Component {
         const renderMenuItem = ({item, index}) => {
 
             return (
+                <Animatable.View animation="fadeInDown" duration={2000} delay={1000}>
                     <Tile
                         key={index}
                         title={item.name}
@@ -41,6 +43,8 @@ class Menu extends React.Component {
                         imageSrc={{ uri: baseUrl + item.image }}
                         //leftAvatar={{ source: require('./'+item.image)}}
                       />
+                </Animatable.View>
+
             );
         };
 
