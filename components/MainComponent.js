@@ -17,6 +17,7 @@ import Home from './HomeComponent';
 import Contact from './ContactComponent';
 import About from './AboutComponent';
 import Favorites from './FavoriteComponent';
+import Login from './LoginComponent';
 
 import { connect } from 'react-redux';
 import { fetchDishes, 
@@ -173,6 +174,28 @@ function renderFavoritesMenu({navigation}){
   )
 }
 
+function renderLogin({navigation}){
+  return(
+    <Stack.Navigator
+      screenOptions={{flex:1, 
+      headerStyle:{backgroundColor: '#512DA8'}, 
+      headerTintColor: '#fff',
+      headerTitleStyle: {color: '#fff'}}}
+    >
+      <Stack.Screen 
+        name="Log In" 
+        component={Login} 
+        options={{
+          title:'Log In',
+          headerLeft: () => (
+            <Icon size={30} name='sign-in' type='font-awesome' color='white'/>
+        ) 
+        }}
+      />
+    </Stack.Navigator> 
+  )
+}
+
 function CustomDrawerContent(props) {
   return (
     <DrawerContentScrollView {...props}>
@@ -211,6 +234,14 @@ class Main extends Component {
               backgroundColor: ''}}
             drawerContent={props => <CustomDrawerContent {...props} />}
           >
+            <Drawer.Screen 
+              name="Log In" 
+              component={renderLogin}
+              options={{
+                drawerLabel: 'Log In',
+                drawerIcon: ({tintColor, focused}) => <Icon size={24} name='sign-in' type='font-awesome' color={tintColor} />
+              }}
+            />
             <Drawer.Screen 
               name="Home" 
               component={renderHome}
