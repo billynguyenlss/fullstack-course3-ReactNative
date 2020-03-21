@@ -27,7 +27,7 @@ const mapDispatchToProps = dispatch => ({
 function RenderDish(props){ 
     const dish = props.selectedDish; 
 
-    //handleViewRef = ref => this.view = ref;
+    //handleViewRef = null;
 
     const recognizeDrag = ({moveX, moveY, dx, dy}) => {
         if (dx < -200)
@@ -36,10 +36,20 @@ function RenderDish(props){
             return false;
     };
 
+    //COMMENT pandResponder
+
+    const recognizeComment = ({moveX,moveY,dx,dy}) => {
+        if(dx > 200)
+            return true;
+        else
+            return false;
+    }
+
     const panResponder = PanResponder.create({
        onStartShouldSetPanResponder: (e, gestureState) => {
            return true;
        },
+       //onPanResponderGrant: () => this.handleViewRef.rubberBand(1000),
 
        onPanResponderEnd: (e, gestureState) => {
            if (recognizeDrag(gestureState)) {
@@ -54,7 +64,7 @@ function RenderDish(props){
                         },
                         {
                             text: 'OK',
-                            onPress: () => props.favorite ? console.log('Already favorite') : props.onPress()
+                            onPress: () => props.favorite ? console.log('Already favorited') : props.onPressFavorite()
                         }
                     ],
                     {cancelable: false }
@@ -62,15 +72,33 @@ function RenderDish(props){
 
                 return true;
            }
-                
+            else if (recognizeComment(gestureState)) {
+                Alert.alert(
+                    'Add comment',
+                    'Do you want to give your comment on ' + dish.name + '?',
+                    [
+                        {
+                            text:'Cancel',
+                            style:'cancel',
+                            onPress: () => {console.log('cancel comment')}
+                        },
+                        {
+                            text:'OK',
+                            onPress: () => {props.onPressAddComment}
+                        }
+                    ],
+                    {cancelable: false}
+                )
+            }
        }
     });
+
 
     if (dish != null){
         return(
             <Animatable.View 
                 animation="fadeInDown" duration={2000} delay={1000}
-                //ref={this.handleViewRef()}
+                //ref={handleViewRef}
                 {...panResponder.panHandlers}
             >
                 <Card
