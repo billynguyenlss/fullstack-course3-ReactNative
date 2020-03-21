@@ -27,6 +27,8 @@ const mapDispatchToProps = dispatch => ({
 function RenderDish(props){ 
     const dish = props.selectedDish; 
 
+    //handleViewRef = ref => this.view = ref;
+
     const recognizeDrag = ({moveX, moveY, dx, dy}) => {
         if (dx < -200)
             return true;
@@ -38,8 +40,9 @@ function RenderDish(props){
        onStartShouldSetPanResponder: (e, gestureState) => {
            return true;
        },
+
        onPanResponderEnd: (e, gestureState) => {
-           if (recognizeDrag(gestureState))
+           if (recognizeDrag(gestureState)) {
                 Alert.alert(
                     'Add to Favorite?',
                     'Are you sure you wish to add ' + dish.name + ' to your favorites?',
@@ -57,7 +60,9 @@ function RenderDish(props){
                     {cancelable: false }
                 )
 
-            return true;
+                return true;
+           }
+                
        }
     });
 
@@ -65,6 +70,7 @@ function RenderDish(props){
         return(
             <Animatable.View 
                 animation="fadeInDown" duration={2000} delay={1000}
+                //ref={this.handleViewRef()}
                 {...panResponder.panHandlers}
             >
                 <Card
