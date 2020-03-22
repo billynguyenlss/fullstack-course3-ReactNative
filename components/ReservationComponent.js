@@ -1,10 +1,11 @@
-import React, { Component } from 'react';
+import React, { Component, useEffect } from 'react';
 import { Text, View, ScrollView, StyleSheet, Picker, Switch, Button, Modal, Alert } from 'react-native';
 import { Card } from 'react-native-elements';
 import DatePicker from 'react-native-datepicker';
 import * as Animatable from 'react-native-animatable';
 import { Notifications } from 'expo';
 import * as Permissions from 'expo-permissions';
+import * as Calendar from 'expo-calendar';
 
 class Reservation extends Component {
 
@@ -28,7 +29,10 @@ class Reservation extends Component {
 
     handleResevation() {
         console.log(JSON.stringify(this.state));
+        this.presentLocalNotification(this.state.date);
+        this.addReservationToCalendar(this.state.date);
         this.toggleModal();
+        this.resetForm();
     }
 
     resetForm() {
@@ -64,6 +68,34 @@ class Reservation extends Component {
                 color: '#512DA8'
             }
         });
+    }
+
+    //assignment 4
+
+    async obtainCalendarPermission() {
+
+        let permission = await Permissions.getAsync(Permissions.CALENDAR)
+        if ( permission.status !== 'granted' ) {
+            permission = await Permissions.askAsync(Permissions.CALENDAR);
+            if (permission.status !== 'granted') {
+                Alert.alert('Permission not granted to calendar');
+            }
+        }
+        return permission;
+    }
+
+    async addReservationToCalendar(date) {
+        await this.obtainCalendarPermission();
+        Calendar.createEventAsync(Calendar.DEFAULT,
+            {
+            title: 'Con Fusion Table Reservation',
+            startDate: new Date(Date.parse(date)),
+            endDate: new Date(Date.parse(date) + 2*60*60*1000),
+            timeZone:'Asia/Hong_Kong',
+            location: '121, Clear Water Bay Road, Clear Water Bay, Kowloon, Hong Kong'
+            }
+        );
+        Alert.alert('Reservation has been added to your calendar');
     }
 
     render(){      
@@ -143,7 +175,8 @@ class Reservation extends Component {
                                         {
                                             text:'OK',
                                             onPress: () => {
-                                                this.presentLocalNotification(this.state.date);
+                                                //this.presentLocalNotification(this.state.date);
+                                                //this.addReservationToCalendar(this.state.date);
                                                 this.handleResevation();
                                             }
                                         }

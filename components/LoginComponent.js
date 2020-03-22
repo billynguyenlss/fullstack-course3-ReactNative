@@ -8,6 +8,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {baseUrl} from '../shared/baseUrl';
 import { Asset } from 'expo-asset';
 import * as ImageManipulator from 'expo-image-manipulator';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 
 class LoginTab extends Component {
@@ -159,6 +160,22 @@ class RegisterTab extends Component {
         this.setState({ imageUri: processedImage.uri })
     }
 
+    getImageFromGallery = async () => {
+        const cameraPermission = await Permissions.askAsync(Permissions.CAMERA);
+        const cameraRollPermission = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+    
+        if (cameraPermission.status === 'granted' && cameraRollPermission.status ==='granted'){
+            let capturedImage = await ImagePicker.launchImageLibraryAsync({
+                allowsEditing: true,
+                aspect: [4,3]
+            })
+
+            if (!capturedImage.cancelled){
+                this.processImage( capturedImage.uri );
+            }
+        }
+    }
+
     handleRegister() {
         console.log(JSON.stringify(this.state));
         if (this.state.remember){
@@ -189,6 +206,10 @@ class RegisterTab extends Component {
                         <Button
                             title='Camera'
                             onPress={this.getImageFromCamera}
+                        />
+                        <Button
+                            title='Gallery'
+                            onPress={this.getImageFromGallery}
                         />
                     </View>
                     <Input
