@@ -84,9 +84,36 @@ class Reservation extends Component {
         return permission;
     }
 
+    async getDefaultCalendarSource() {
+        const calendars = await Calendar.getCalendarsAsync();
+        const defaultCalendars = calendars.filter(each => each.source.name === 'Default');
+        return defaultCalendars[0].source;
+    }
+
+    // code from Expo calendar API documentation: we need to create a calendar
+    async createCalendar() {
+        const defaultCalendarSource =
+          Platform.OS === 'ios'
+            ? await getDefaultCalendarSource()
+            : { isLocalAccount: true, name: 'Expo Calendar' };
+        const newCalendarID = await Calendar.createCalendarAsync({
+          title: 'Expo Calendar',
+          color: 'blue',
+          entityType: Calendar.EntityTypes.EVENT,
+          sourceId: defaultCalendarSource.id,
+          source: defaultCalendarSource,
+          name: 'internalCalendarName',
+          ownerAccount: 'personal',
+          accessLevel: Calendar.CalendarAccessLevel.OWNER,
+        });
+        return newCalendarID;
+    }
+
     async addReservationToCalendar(date) {
         await this.obtainCalendarPermission();
-        Calendar.createEventAsync(Calendar.DEFAULT,
+        const calendarId = await this.createCalendar();
+        Calendar.createEventAsync(
+            calendarId,
             {
             title: 'Con Fusion Table Reservation',
             startDate: new Date(Date.parse(date)),
