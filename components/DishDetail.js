@@ -1,6 +1,8 @@
 import 'react-native-gesture-handler';
 import React, {Component} from 'react';
-import {ScrollView, View, Text, FlatList, Switch, Button, Modal, StyleSheet, Alert, PanResponder } from 'react-native';
+import {ScrollView, View, Text, FlatList, 
+    Switch, Button, Modal, StyleSheet, 
+    Alert, PanResponder, Share } from 'react-native';
 import {Card, ListItem, Icon, Rating, Input } from 'react-native-elements';
 import { DISHES } from '../shared/dishes';
 import {COMMENTS} from '../shared/comments';
@@ -93,6 +95,16 @@ function RenderDish(props){
        }
     });
 
+    const shareDish = (title, message, url) => {
+        Share.share({
+            title: title,
+            message: title + ': ' + message + ' ' + url,
+            url: url
+        },{
+            dialogTitle: 'Share ' + title
+        });
+    }
+
 
     if (dish != null){
         return(
@@ -124,7 +136,15 @@ function RenderDish(props){
                             type="font-awesome"
                             color='#512DA8'
                             onPress = {props.onPressAddComment}
-                        />                 
+                        />
+                        <Icon
+                            raised
+                            reverse
+                            name='share'
+                            type='font-awesome'
+                            color='#51D2A8'
+                            onPress = {() => shareDish(dish.name, dish.description, baseUrl + dish.image)}
+                        />
                     </View>
                     
                 </Card>
